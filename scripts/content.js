@@ -1,6 +1,7 @@
 (function () {
   const REFINE_BUTTON_ID = "custom-refine-btn";
   const SUGGESTIONS_BUTTON_ID = "custom-suggestions-btn";
+  const SELL_PROMPT_BUTTON_ID = "custom-sell-prompt-btn";
 
   let isRefining = false;
 
@@ -40,7 +41,6 @@
   const MODAL_OVERLAY_ID = "promptcraft-suggestions-overlay";
   const MODAL_ID = "promptcraft-suggestions-modal";
   const MODAL_CLOSE_BTN_ID = "promptcraft-suggestions-close-btn";
-  const SELL_PROMPT_BUTTON_ID = "custom-sell-prompt-btn";
 
   function injectModalStyles() {
     if (document.getElementById(MODAL_STYLES_ID)) {
@@ -64,28 +64,28 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.8); /* Whitish background */
+        background-color: rgba(255, 255, 255, 0.8);
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 10000;
-        animation: fadeIn 0.15s ease-out; /* Faster animation */
+        animation: fadeIn 0.15s ease-out;
       }
       #${MODAL_ID} {
-        background-color: #fff; /* Modal box itself still white for contrast */
+        background-color: #fff;
         padding: 25px;
         border-radius: 28px;
-        border: 1px solid #D4D4D4; /* Lighter border color */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Softer shadow */
+        border: 1px solid #D4D4D4;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         width: 90vw;
-        height: 90vh; /* Limit height to prevent overflow */
+        height: 90vh;
         max-width: 90vw;
-        max-height: 90vh; /* Limit height to prevent overflow */
-        display: flex; /* Use flexbox for layout */
-        flex-direction: column; /* Stack children vertically */
-        box-sizing: border-box; /* Ensure padding is included in width/height */
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
         position: relative;
-        animation: scaleUpFadeIn 0.15s ease-out; /* Faster animation */
+        animation: scaleUpFadeIn 0.15s ease-out;
         color: #333;
       }
       #${MODAL_CLOSE_BTN_ID} {
@@ -100,13 +100,13 @@
         line-height: 1;
       }
       #${MODAL_CLOSE_BTN_ID}:hover {
-        color: #333; /* Darker hover color for close button */
+        color: #333;
       }
       #${MODAL_ID} h3 {
         margin-top: 0;
         margin-bottom: 15px;
         color: #333;
-        text-align: left; /* Align title to the left */
+        text-align: left;
       }
       #${MODAL_ID} .filters-section {
         display: flex;
@@ -132,17 +132,17 @@
         color: #007bff;
         background-color: #e6f2ff;
       }
-      #${MODAL_ID} .sub-filters-section { /* New style for sub-filters */
+      #${MODAL_ID} .sub-filters-section {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
         margin-bottom: 15px;
         padding-bottom: 10px;
-        border-bottom: 1px solid #f5f5f5; /* Lighter border for sub-filters */
+        border-bottom: 1px solid #f5f5f5;
       }
       #${MODAL_ID} .content-section {
-        flex-grow: 1; /* Allow content to take remaining space */
-        overflow-y: auto; /* Allow scrolling for content */
+        flex-grow: 1;
+        overflow-y: auto;
       }
       #${MODAL_ID} .content-section p {
         margin-bottom: 10px;
@@ -157,12 +157,11 @@
     if (overlay) {
       overlay.remove();
     }
-    // Optional: Remove event listeners from body/window if any were added for the modal
   }
 
   function openSuggestionsModal() {
     if (document.getElementById(MODAL_OVERLAY_ID)) {
-      return; // Modal already open
+      return;
     }
 
     injectModalStyles();
@@ -245,11 +244,9 @@
     const modalTitle = document.createElement("h3");
     modalTitle.innerText = "Prompt Library";
 
-    // Main Filters Section (for Categories)
     const filtersSection = document.createElement("div");
     filtersSection.className = "filters-section";
 
-    // Content Section (will hold sub-filters and then final content)
     const contentSection = document.createElement("div");
     contentSection.className = "content-section";
     contentSection.innerHTML = "<p>Select a category to see options.</p>";
@@ -261,22 +258,16 @@
       pill.dataset.category = category.name;
 
       pill.addEventListener("click", () => {
-        // Deactivate other main category pills
         filtersSection
           .querySelectorAll(".filter-pill.active")
-          .forEach((activePill) => {
-            activePill.classList.remove("active");
-          });
-        // Activate current main category pill
+          .forEach((activePill) => activePill.classList.remove("active"));
         pill.classList.add("active");
-
-        // Clear content section and prepare for sub-categories
         contentSection.innerHTML = "";
 
         const subFiltersSection = document.createElement("div");
         subFiltersSection.className = "sub-filters-section";
 
-        const actualContentDisplay = document.createElement("div"); // For final content
+        const actualContentDisplay = document.createElement("div");
         actualContentDisplay.innerHTML = `<p>Select a sub-category from '${category.name}'.</p>`;
 
         category.subCategories.forEach((subCategory) => {
@@ -286,22 +277,16 @@
           subPill.dataset.subcategory = subCategory;
 
           subPill.addEventListener("click", () => {
-            // Deactivate other sub-category pills
             subFiltersSection
               .querySelectorAll(".filter-pill.active")
-              .forEach((activeSubPill) => {
-                activeSubPill.classList.remove("active");
-              });
-            // Activate current sub-category pill
+              .forEach((activeSubPill) =>
+                activeSubPill.classList.remove("active")
+              );
             subPill.classList.add("active");
-
-            // Display placeholder for final content
             actualContentDisplay.innerHTML = `<p>Showing content for: ${category.name} &rarr; ${subCategory}</p>`;
-            // Future: Here you would load the actual content/prompts for the selected subCategory
           });
           subFiltersSection.appendChild(subPill);
         });
-
         contentSection.appendChild(subFiltersSection);
         contentSection.appendChild(actualContentDisplay);
       });
@@ -314,42 +299,33 @@
     modal.appendChild(contentSection);
     overlay.appendChild(modal);
 
-    overlay.addEventListener('click', function (event) {
+    overlay.addEventListener("click", function (event) {
       if (event.target === overlay) {
         closeSuggestionsModal();
       }
     });
-
     document.body.appendChild(overlay);
   }
 
   async function streamReplaceTextSmoothFast(targetEl, newText) {
     const p = targetEl.querySelector("p") || targetEl;
     p.innerText = "";
-
     let currentText = "";
-    let chunkSize = 2; // Show 2 characters at a time
-
+    let chunkSize = 2;
     for (let i = 0; i < newText.length; i += chunkSize) {
       currentText += newText.slice(i, i + chunkSize);
       p.innerText = currentText;
-
-      // Move cursor to the end
       const selection = window.getSelection();
       const range = document.createRange();
       if (p.childNodes.length > 0) {
-        // Ensure there's content to set cursor after
         range.setStart(p.childNodes[0], p.innerText.length);
-        range.collapse(true); // Collapse the range to the start (which is now the end of text)
+        range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
       } else {
-        // If p is empty (e.g., at the very start or if cleared), focus it
         p.focus();
       }
-
-      // Faster base speed, still a bit random
-      const delay = 10 + Math.random() * 20; // 10ms–30ms
+      const delay = 10 + Math.random() * 20;
       await new Promise((r) => setTimeout(r, delay));
     }
   }
@@ -357,7 +333,7 @@
   function createButton(id, ariaLabel, svgIcon, buttonText) {
     const buttonWrapper = document.createElement("div");
     buttonWrapper.id = id;
-    buttonWrapper.style.display = "inline-block"; // Suggestion for side-by-side, though parent flex is better
+    buttonWrapper.style.display = "inline-block";
     buttonWrapper.innerHTML = `
         <button type="button" class="composer-btn" aria-label="${ariaLabel}" data-pill>
           ${svgIcon}
@@ -366,11 +342,34 @@
     return buttonWrapper;
   }
 
-  function insertButton() {
+  function createClaudeButton(buttonHtmlId, ariaLabel, svgIcon) {
+    const wrapperDiv = document.createElement("div");
+    wrapperDiv.className = "flex items-center prompt-craft-button--claude";
+
+    wrapperDiv.innerHTML = `
+        <div class="flex shrink-0" data-state="closed" style="opacity: 1; transform: none;">
+            <button class="inline-flex items-center justify-center relative shrink-0 can-focus select-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:drop-shadow-none border-0.5 transition-all h-8 min-w-8 rounded-lg flex items-center px-[7.5px] group !pointer-events-auto !outline-offset-1 text-text-300 border-border-300 active:scale-[0.98] hover:text-text-200/90 hover:bg-bg-100" 
+                    type="button" 
+                    id="${buttonHtmlId}" 
+                    aria-label="${ariaLabel}"
+                    title="${ariaLabel}"
+                    data-testid="${buttonHtmlId}-testid">
+                <div class="flex flex-row items-center justify-center gap-1">
+                    ${svgIcon}
+                </div>
+            </button>
+        </div>
+    `;
+    return wrapperDiv;
+  }
+
+  // --- CHATGPT.COM SPECIFIC LOGIC ---
+  function insertChatGPTButtons() {
     const footerActions = document.querySelector(
       '[data-testid="composer-footer-actions"]'
     );
     if (footerActions) {
+      // Quick Refine Button
       if (!document.getElementById(REFINE_BUTTON_ID)) {
         const refineBtn = createButton(
           REFINE_BUTTON_ID,
@@ -378,191 +377,326 @@
           REFINE_SVG_ICON,
           "Quick Refine"
         );
-        if (refineBtn) {
-          const buttonElement = refineBtn.querySelector("button");
-          const buttonTextSpan = buttonElement.querySelector("span");
-
-          if (buttonElement) {
-            buttonElement.addEventListener("click", async () => {
-              if (isRefining) {
-                console.log("Refinement already in progress.");
-                return;
+        const buttonElement = refineBtn.querySelector("button");
+        if (buttonElement) {
+          buttonElement.addEventListener("click", async () => {
+            if (isRefining) return;
+            const promptTextareaForCheck =
+              document.getElementById("prompt-textarea");
+            let promptText =
+              promptTextareaForCheck?.querySelector("p")?.innerText.trim() ||
+              "";
+            if (!promptText) {
+              console.log("Prompt textarea is empty.");
+              return;
+            }
+            isRefining = true;
+            const originalButtonContent = buttonElement.innerHTML;
+            buttonElement.innerHTML = `${LOADER_SVG_ICON} <span style="margin-left: 8px;">Refining...</span>`;
+            buttonElement.disabled = true;
+            try {
+              await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API call
+              const refinedText = "This is a refined version of: " + promptText;
+              const promptTextarea = document.getElementById("prompt-textarea");
+              if (promptTextarea) {
+                await streamReplaceTextSmoothFast(promptTextarea, refinedText);
               }
-
-              const promptTextareaForCheck =
-                document.getElementById("prompt-textarea");
-              let promptText = "";
-              if (promptTextareaForCheck) {
-                const paragraphElementForCheck =
-                  promptTextareaForCheck.querySelector("p");
-                if (paragraphElementForCheck) {
-                  promptText = paragraphElementForCheck.innerText.trim();
-                }
-              }
-
-              if (promptText === "") {
-                console.log(
-                  "Prompt is empty. Adding example prompt to textarea."
-                );
-                const promptTextarea =
-                  document.getElementById("prompt-textarea");
-                if (promptTextarea) {
-                  const paragraphElement = promptTextarea.querySelector("p");
-                  if (paragraphElement) {
-                    paragraphElement.innerText =
-                      "Replace this and click Refine Prompt";
-                  } else {
-                    // Fallback if p tag is not found, though less ideal for contenteditable
-                    promptTextarea.innerText =
-                      "Replace this and click Refine Prompt";
-                  }
-                }
-                return; // Stop further execution
-              }
-
-              isRefining = true;
-              buttonElement.disabled = true;
-              if (buttonTextSpan) buttonTextSpan.innerText = "Refining...";
-              const originalIcon = buttonElement.querySelector("svg");
-              if (originalIcon) {
-                originalIcon.outerHTML = LOADER_SVG_ICON;
-              }
-
-              console.log("Refine button clicked. Fetching data...");
-
-              try {
-                // Fake API request
-                await new Promise((resolve) =>
-                  setTimeout(resolve, Math.random() * 1000 + 2000)
-                ); // 2-3 seconds delay
-
-                const response = await fetch(
-                  "https://pokeapi.co/api/v2/pokemon/charmeleon"
-                );
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                const pokemonName = data.name;
-
-                const promptTextarea =
-                  document.getElementById("prompt-textarea");
-                if (promptTextarea) {
-                  const paragraphElement = promptTextarea.querySelector("p");
-                  if (paragraphElement) {
-                    await streamReplaceTextSmoothFast(
-                      promptTextarea,
-                      `Tell me about ${pokemonName}. `.repeat(10)
-                    );
-                    console.log(
-                      "Prompt updated with Pokemon name:",
-                      pokemonName
-                    );
-                  } else {
-                    // Fallback if p tag is not found, though less ideal for contenteditable
-                    promptTextarea.innerText = `Tell me about ${pokemonName}.`;
-                    console.log(
-                      "Prompt <p> tag not found, updated div innerText directly."
-                    );
-                  }
-                } else {
-                  console.log(
-                    "prompt-textarea not found when trying to update."
-                  );
-                }
-              } catch (error) {
-                console.error("Error during refinement:", error);
-                const promptTextarea =
-                  document.getElementById("prompt-textarea");
-                if (promptTextarea) {
-                  const paragraphElement = promptTextarea.querySelector("p");
-                  if (paragraphElement) {
-                    paragraphElement.innerText =
-                      "Error fetching data. Please try again.";
-                  } else {
-                    promptTextarea.innerText =
-                      "Error fetching data. Please try again.";
-                  }
-                }
-              } finally {
-                // Restore button
-                if (originalIcon) {
-                  // originalIcon might have been removed if createButton was called again
-                  const currentSvg = buttonElement.querySelector("svg");
-                  if (
-                    currentSvg &&
-                    currentSvg.classList.contains("lucide-loader-circle")
-                  ) {
-                    currentSvg.outerHTML = REFINE_SVG_ICON;
-                  }
-                }
-                buttonElement.disabled = false;
-                isRefining = false;
-                if (buttonTextSpan) buttonTextSpan.innerText = "Quick Refine"; // Restore text
-                console.log("Refinement process finished.");
-              }
-            });
-          }
-          footerActions.appendChild(refineBtn);
-          console.log("✅ Refine button added.");
+            } catch (error) {
+              console.error("Error during refinement:", error);
+              const p =
+                promptTextareaForCheck?.querySelector("p") ||
+                promptTextareaForCheck;
+              if (p) p.innerText = "Error refining. Please try again.";
+            } finally {
+              buttonElement.innerHTML = originalButtonContent;
+              const newButtonTextSpan = buttonElement.querySelector("span");
+              if (newButtonTextSpan)
+                newButtonTextSpan.textContent = "Quick Refine";
+              buttonElement.disabled = false;
+              isRefining = false;
+            }
+          });
         }
+        footerActions.appendChild(refineBtn);
       }
 
-      // Suggestions Button
+      // Prompt Library Button
       if (!document.getElementById(SUGGESTIONS_BUTTON_ID)) {
-        const suggestionsBtnWrapper = createButton(
+        const suggestionsBtn = createButton(
           SUGGESTIONS_BUTTON_ID,
           "Prompt Library",
           SUGGESTIONS_SVG_ICON,
           "Prompt Library"
         );
-        if (suggestionsBtnWrapper) {
-          const suggestionsButtonElement =
-            suggestionsBtnWrapper.querySelector("button");
-          if (suggestionsButtonElement) {
-            suggestionsButtonElement.addEventListener(
-              "click",
-              openSuggestionsModal
-            );
-          }
-          footerActions.appendChild(suggestionsBtnWrapper);
-          console.log("✅ Prompt Library button added.");
-        }
+        suggestionsBtn
+          .querySelector("button")
+          ?.addEventListener("click", () => {
+            openSuggestionsModal();
+          });
+        footerActions.appendChild(suggestionsBtn);
       }
 
       // Sell a Prompt Button
       if (!document.getElementById(SELL_PROMPT_BUTTON_ID)) {
-        const sellPromptBtnWrapper = createButton(
+        const sellPromptBtn = createButton(
           SELL_PROMPT_BUTTON_ID,
           "Sell a Prompt",
           SELL_PROMPT_SVG_ICON,
           "Sell a Prompt"
         );
-        if (sellPromptBtnWrapper) {
-          const sellPromptButtonElement = sellPromptBtnWrapper.querySelector("button");
-          if (sellPromptButtonElement) {
-            sellPromptButtonElement.addEventListener("click", () => {
-              window.open('https://placeholder-sell-prompt-link.com', '_blank'); // Replace with actual link
-            });
-          }
-          footerActions.appendChild(sellPromptBtnWrapper);
-          console.log("✅ Sell a Prompt button added.");
-        }
+        sellPromptBtn.querySelector("button")?.addEventListener("click", () => {
+          window.open("https://placeholder-sell-prompt-link.com", "_blank");
+        });
+        footerActions.appendChild(sellPromptBtn);
       }
     }
   }
 
-  // Observe changes to the DOM
-  const observer = new MutationObserver(() => {
-    insertButton();
-  });
+  function initChatGPT() {
+    const observer = new MutationObserver((mutationsList, obs) => {
+      const targetNode = document.querySelector(
+        '[data-testid="composer-footer-actions"]'
+      );
+      if (targetNode) {
+        // Check if buttons are already there to prevent duplicates
+        if (
+          !document.getElementById(REFINE_BUTTON_ID) ||
+          !document.getElementById(SUGGESTIONS_BUTTON_ID) ||
+          !document.getElementById(SELL_PROMPT_BUTTON_ID)
+        ) {
+          insertChatGPTButtons();
+        }
+        // Keep observing as ChatGPT might re-render the footer
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 
-  // Start observing the body (or documentElement)
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+  // --- CLAUDE.AI SPECIFIC LOGIC ---
+  function insertClaudeAIButtons(targetContainer) {
+    console.log(
+      "Attempting to insert Claude.ai buttons (new structure) into:",
+      targetContainer
+    );
 
-  // Initial try in case the element is already present
-  insertButton();
+    if (!targetContainer) {
+      console.error(
+        "Target container for Claude.ai buttons is null or undefined."
+      );
+      return;
+    }
+
+    // Check if buttons (wrappers) are already there using the specific class
+    if (targetContainer.querySelector(".prompt-craft-button--claude")) {
+      console.log(
+        "Prompt Craft buttons (Claude structure) already exist in this container."
+      );
+      return;
+    }
+
+    // Define unique IDs for Claude button elements
+    const CLAUDE_REFINE_BTN_ID = "prompt-craft-claude-refine-btn";
+    const CLAUDE_LIBRARY_BTN_ID = "prompt-craft-claude-library-btn";
+    const CLAUDE_SELL_BTN_ID = "prompt-craft-claude-sell-btn";
+
+    // Create "Quick Refine" button for Claude.ai
+    const refineButtonWrapperClaude = createClaudeButton(
+      CLAUDE_REFINE_BTN_ID,
+      "Quick Refine",
+      REFINE_SVG_ICON
+    );
+    const actualRefineButtonClaude =
+      refineButtonWrapperClaude.querySelector("button");
+    if (actualRefineButtonClaude) {
+      actualRefineButtonClaude.addEventListener("click", async () => {
+        if (isRefining) return;
+
+        const promptEditableDiv = document.querySelector(
+          'div[contenteditable="true"].ProseMirror'
+        );
+        const promptPTag = promptEditableDiv
+          ? promptEditableDiv.querySelector("p")
+          : null;
+        let promptText = promptPTag ? promptPTag.textContent.trim() : "";
+
+        if (!promptText) {
+          console.log("Claude prompt textarea or p tag is empty or not found.");
+          return;
+        }
+
+        isRefining = true;
+        const buttonIconContainer =
+          actualRefineButtonClaude.querySelector("div.flex-row");
+        const originalIconHTML = buttonIconContainer
+          ? buttonIconContainer.innerHTML
+          : REFINE_SVG_ICON;
+        if (buttonIconContainer) {
+          buttonIconContainer.innerHTML = LOADER_SVG_ICON;
+        }
+        actualRefineButtonClaude.disabled = true;
+
+        try {
+          console.log("Claude Quick Refine clicked. Prompt:", promptText);
+          // Simulate API call or processing
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          const refinedText =
+            "This is a refined Claude version of: " + promptText; // Simulated refined text
+
+          if (promptPTag) {
+            await streamReplaceTextSmoothFast(promptPTag, refinedText);
+          } else {
+            // Fallback if p tag somehow became null, though unlikely if promptText was found
+            console.error("Claude prompt P tag not found for streaming.");
+          }
+
+          console.log("Simulated refining and streaming complete for Claude.");
+        } catch (error) {
+          console.error("Error during Claude refinement:", error);
+        } finally {
+          if (buttonIconContainer) {
+            buttonIconContainer.innerHTML = originalIconHTML;
+          }
+          actualRefineButtonClaude.disabled = false;
+          isRefining = false;
+        }
+      });
+    }
+
+    // Create "Prompt Library" button for Claude.ai
+    const suggestionsButtonWrapperClaude = createClaudeButton(
+      CLAUDE_LIBRARY_BTN_ID,
+      "Prompt Library",
+      SUGGESTIONS_SVG_ICON
+    );
+    const actualSuggestionsButtonClaude =
+      suggestionsButtonWrapperClaude.querySelector("button");
+    if (actualSuggestionsButtonClaude) {
+      actualSuggestionsButtonClaude.addEventListener(
+        "click",
+        openSuggestionsModal
+      );
+    }
+
+    // Create "Sell a Prompt" button for Claude.ai
+    const sellPromptButtonWrapperClaude = createClaudeButton(
+      CLAUDE_SELL_BTN_ID,
+      "Sell a Prompt",
+      SELL_PROMPT_SVG_ICON
+    );
+    const actualSellPromptButtonClaude =
+      sellPromptButtonWrapperClaude.querySelector("button");
+    if (actualSellPromptButtonClaude) {
+      actualSellPromptButtonClaude.addEventListener("click", () => {
+        window.open("https://promptbase.com/create", "_blank");
+      });
+    }
+
+    // Prepend new button wrappers to the target container so they appear at the start.
+    // Prepending in this order (Sell, then Library, then Refine)
+    // results in the visual order: [Refine, Library, Sell, ...existing children]
+    targetContainer.prepend(sellPromptButtonWrapperClaude);
+    targetContainer.prepend(suggestionsButtonWrapperClaude);
+    targetContainer.prepend(refineButtonWrapperClaude);
+
+    console.log(
+      "Successfully inserted Claude.ai buttons (new structure) at the beginning."
+    );
+  }
+
+  function initClaudeAI() {
+    console.log("Hello from Prompt Craft on Claude.ai!");
+    const observer = new MutationObserver((mutationsList, obs) => {
+      // Check if buttons are already on the page to prevent re-running logic if already injected.
+      // This check is more general, specific check is done before insertion.
+      if (document.querySelector(".prompt-craft-button--claude")) {
+        // console.log("Claude buttons detected on page, disconnecting observer.");
+        obs.disconnect();
+        return;
+      }
+
+      const radixElement = document.querySelector('[id^="radix-"]');
+      let targetNode = null;
+
+      if (
+        radixElement &&
+        radixElement.previousElementSibling &&
+        radixElement.previousElementSibling.matches(
+          "div.relative.flex-1.flex.items-center.gap-2.shrink.min-w-0" // This selector seems specific, ensure it's correct for Claude.ai
+        )
+      ) {
+        targetNode = radixElement.previousElementSibling;
+      } else if (
+        radixElement &&
+        radixElement.previousElementSibling &&
+        radixElement.previousElementSibling.tagName === "DIV"
+      ) {
+        // Fallback if the specific class match fails but a div previous sibling exists
+        // This is based on the user's description: "a flex div which is the previous sibling"
+        console.log(
+          "Specific selector for previous sibling of radix element did not match, but found a DIV. Using it as target."
+        );
+        targetNode = radixElement.previousElementSibling;
+      } else {
+        // Fallback: search for the div more broadly if the radix-based approach fails
+        const potentialTargets = document.querySelectorAll(
+          "div.relative.flex-1.flex.items-center.gap-2.shrink.min-w-0" // Corrected selector (was :flex)
+        );
+        for (let pt of potentialTargets) {
+          if (
+            pt.nextElementSibling &&
+            pt.nextElementSibling.id &&
+            pt.nextElementSibling.id.startsWith("radix-")
+          ) {
+            targetNode = pt;
+            break;
+          }
+        }
+      }
+
+      if (targetNode) {
+        console.log("Found target node for Claude.ai buttons:", targetNode);
+        let buttonsInjectedThisCall = false;
+        // Check again specifically in the targetNode before inserting
+        if (!targetNode.querySelector(".prompt-craft-button--claude")) {
+          insertClaudeAIButtons(targetNode); // Pass the found node
+          buttonsInjectedThisCall = true;
+          console.log(
+            "Prompt Craft buttons inserted for Claude.ai by this observer call."
+          );
+        } else {
+          console.log(
+            "Prompt Craft buttons already present in the identified targetNode for Claude.ai."
+          );
+        }
+
+        // Disconnect the observer since we've found the target and attempted/confirmed button state.
+        console.log(
+          "Disconnecting Claude.ai observer as target processing is complete."
+        );
+        obs.disconnect();
+      } else {
+        // console.log("Target node for Claude.ai not found yet, continuing to observe...");
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // --- MAIN INITIALIZATION LOGIC ---
+  function init() {
+    const hostname = window.location.hostname;
+    if (hostname.includes("chatgpt.com")) {
+      initChatGPT();
+    } else if (hostname.includes("claude.ai")) {
+      initClaudeAI();
+    }
+  }
+
+  // --- SCRIPT EXECUTION ---
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
