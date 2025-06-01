@@ -1,0 +1,10 @@
+{
+  "name": "Prompt Craft",
+  "description": "A Chrome extension to enhance prompt crafting",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "/images/icon48.png"
+  }
+}
